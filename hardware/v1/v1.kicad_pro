@@ -320,6 +320,10 @@
     [
       "c764c9cc-c746-4a21-a205-ba4d93c4abbe",
       ""
+    ],
+    [
+      "c9984e64-cedc-43ad-a9a0-b69520f96617",
+      "audio_output"
     ]
   ],
   "text_variables": {}
