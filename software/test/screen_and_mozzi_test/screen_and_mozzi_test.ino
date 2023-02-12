@@ -42,6 +42,11 @@ XPT2046_Touchscreen ts(STMPE_CS);
 Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
 
 
+// ROTARY
+# define PIN0 6
+# define PIN1 7
+#include <RotaryEncoder.h>
+RotaryEncoder *encoder = nullptr;
 
 
 /*************************
@@ -59,6 +64,30 @@ Oscil <SAW2048_NUM_CELLS, AUDIO_RATE> aSaw2(SAW2048_DATA);
 int freq1 = 440;
 volatile int freq2 = 88;
 
+volatile int rotary = 0;
+int rotary_prev = 0;
+
+
+/*
+  void rotary_encoder_irq()
+  {
+  if (digitalRead(PIN0))
+  { if (digitalRead(PIN1)) rotary += 1;
+    else rotary -= 1;
+  }
+  else
+  { if (digitalRead(PIN1)) rotary -= 1;
+    else rotary += 1;
+  }
+  }*/
+
+
+void checkPosition()
+{
+  encoder->tick(); // just call tick() to check the state.
+}
+
+
 
 
 void setup() {
@@ -71,6 +100,8 @@ void setup1(void) {
   SPI.setRX(4);
   SPI.setTX(3);
   SPI.setSCK(2);
+  pinMode(PIN0, INPUT_PULLUP);
+  pinMode(PIN1, INPUT_PULLUP);
   Serial.begin(115200);
   Serial.println(F("Touch Paint!"));
 
@@ -84,14 +115,26 @@ void setup1(void) {
   Serial.println("Touchscreen started");
   tft.fillScreen(ILI9341_BLACK);
 
+/*******
+ * should work to do it ourselves, my test was not good but I think an interrupt is needed on both pins.
+ * and not only on falling
+ * 
+ * 
+ */
+  encoder = new RotaryEncoder(PIN0, PIN1, RotaryEncoder::LatchMode::FOUR0);
+
+  attachInterrupt(digitalPinToInterrupt(PIN0), checkPosition, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(PIN1), checkPosition, CHANGE);
+  // attachInterrupt(digitalPinToInterrupt(PIN0), rotary_encoder_irq, FALLING);
+
 }
 
 
 void updateControl() {
- /* Serial.print("f");
-  Serial.print(freq1);
-  Serial.print(" ");
-  Serial.println(freq2);*/
+  /* Serial.print("f");
+    Serial.print(freq1);
+    Serial.print(" ");
+    Serial.println(freq2);*/
   aSaw.setFreq(freq1);
   aSaw2.setFreq(freq2);
 }
@@ -100,13 +143,37 @@ void loop() {
   audioHook();
 }
 
-AudioOutput_t updateAudio(){
+AudioOutput_t updateAudio() {
   //return MonoOutput::fromNBit(8,aSaw1.next()+aSaw2.next()); // return an int signal centred around 0
-  return MonoOutput::fromNBit(9,aSaw2.next()+aSaw.next()); // return an int signal centred around 0
+  return MonoOutput::fromNBit(9, aSaw2.next() + aSaw.next()); // return an int signal centred around 0
 }
 
 void loop1()
 {
+
+  /*  if (rotary != rotary_prev) {
+       Serial.println(rotary);
+       rotary_prev = rotary;
+     }*/
+
+  static int pos = 0;
+
+  encoder->tick(); // just call tick() to check the state.
+
+  int newPos = encoder->getPosition();
+  if (pos != newPos) {
+    Serial.print("pos:");
+    Serial.print(newPos);
+    Serial.print(" dir:");
+    Serial.println((int)(encoder->getDirection()));
+    pos = newPos;
+  } // if
+
+
+
+
+
+
 
 
   // Retrieve a point
@@ -115,16 +182,16 @@ void loop1()
     TS_Point p = ts.getPoint();
 
 
-   /* Serial.print("X = "); Serial.print(p.x);
-    Serial.print("\tY = "); Serial.print(p.y);
-    Serial.print("\tPressure = "); Serial.println(p.z);*/
+    /* Serial.print("X = "); Serial.print(p.x);
+      Serial.print("\tY = "); Serial.print(p.y);
+      Serial.print("\tPressure = "); Serial.println(p.z);*/
 
 
     // Scale from ~0->4000 to tft.width using the calibration #'s
     p.x = map(p.x, TS_MINX, TS_MAXX, 0, tft.width());
     p.y = map(p.y, TS_MINY, TS_MAXY, 0, tft.height());
     freq1 = p.x;
-    freq2 = p.y<<1;
+    freq2 = p.y << 1;
 
 
     tft.fillRect(100, 150, 140, 60, ILI9341_BLACK);
