@@ -121,7 +121,7 @@ void setup1(void) {
  * 
  * 
  */
-  encoder = new RotaryEncoder(PIN0, PIN1, RotaryEncoder::LatchMode::FOUR0);
+  encoder = new RotaryEncoder(PIN1, PIN0, RotaryEncoder::LatchMode::FOUR3);
 
   attachInterrupt(digitalPinToInterrupt(PIN0), checkPosition, CHANGE);
   attachInterrupt(digitalPinToInterrupt(PIN1), checkPosition, CHANGE);
@@ -158,7 +158,7 @@ void loop1()
 
   static int pos = 0;
 
-  encoder->tick(); // just call tick() to check the state.
+ // encoder->tick(); // just call tick() to check the state.
 
   int newPos = encoder->getPosition();
   if (pos != newPos) {
