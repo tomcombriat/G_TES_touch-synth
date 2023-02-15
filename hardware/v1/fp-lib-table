@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name "Pi Pico")(type "KiCad")(uri "/home/tom/TES/G_TES_touch-synth/hardware/kicad_components/RP-Pico Libraries/MCU_RaspberryPi_and_Boards.pretty")(options "")(descr ""))
+)
