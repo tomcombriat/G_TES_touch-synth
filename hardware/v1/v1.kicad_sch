@@ -4844,7 +4844,7 @@
     (uuid bc33b228-85e6-4d5d-99b9-88d2a0d93ad5)
     (property "Reference" "U3" (id 0) (at 178.435 66.201 0))
     (property "Value" "2.4inches" (id 1) (at 178.435 68.7379 0))
-    (property "Footprint" "" (id 2) (at 180.975 82.55 0)
+    (property "Footprint" "TFT_Screens:TFT_2.4" (id 2) (at 180.975 82.55 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "" (id 3) (at 180.975 82.55 0)
@@ -5769,7 +5769,7 @@
       (reference "U2") (unit 1) (value "Pico") (footprint "Pi Pico:RPi_Pico_SMD_TH")
     )
     (path "/bc33b228-85e6-4d5d-99b9-88d2a0d93ad5"
-      (reference "U3") (unit 1) (value "2.4inches") (footprint "")
+      (reference "U3") (unit 1) (value "2.4inches") (footprint "TFT_Screens:TFT_2.4")
     )
     (path "/4e48de9c-53a5-47eb-ae60-7f5ccb2d118e"
       (reference "U4") (unit 1) (value "TL074") (footprint "Package_DIP:DIP-14_W7.62mm_Socket")
