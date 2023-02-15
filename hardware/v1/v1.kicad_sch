@@ -3555,7 +3555,7 @@
     (property "Value" "10k - lin - dual" (id 1) (at 440.182 131.2422 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
-    (property "Footprint" "" (id 2) (at 441.96 129.54 0)
+    (property "Footprint" "dual_pot:Dual Pot RK1114GH" (id 2) (at 441.96 129.54 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (id 3) (at 441.96 129.54 0)
@@ -4924,7 +4924,7 @@
     (property "Value" "10k - lin - dual" (id 1) (at 440.69 57.15 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
-    (property "Footprint" "" (id 2) (at 444.5 52.07 0)
+    (property "Footprint" "dual_pot:Dual Pot RK1114GH" (id 2) (at 444.5 52.07 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (id 3) (at 444.5 52.07 0)
@@ -5739,10 +5739,10 @@
       (reference "R20") (unit 1) (value "10") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal")
     )
     (path "/1dbdedeb-a12d-4a03-88a7-8dc9f8b82f58"
-      (reference "RV1") (unit 1) (value "10k - lin - dual") (footprint "")
+      (reference "RV1") (unit 1) (value "10k - lin - dual") (footprint "dual_pot:Dual Pot RK1114GH")
     )
     (path "/c0f91244-7785-4f67-800f-3775e839ff20"
-      (reference "RV1") (unit 2) (value "10k - lin - dual") (footprint "")
+      (reference "RV1") (unit 2) (value "10k - lin - dual") (footprint "dual_pot:Dual Pot RK1114GH")
     )
     (path "/d7195655-bc8b-42c6-9265-3feac398262b"
       (reference "RV3") (unit 1) (value "10k - POT0") (footprint "Potentiometer_THT:Potentiometer_Alps_RK09K_Single_Vertical")
