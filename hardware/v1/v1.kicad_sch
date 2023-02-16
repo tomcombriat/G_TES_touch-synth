@@ -3819,7 +3819,7 @@
     (property "Value" "Conn_01x02_Female" (id 1) (at 250.2662 29.0072 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Footprint" "Connector_JST:JST_XH_B2B-XH-AM_1x02_P2.50mm_Vertical" (id 2) (at 249.555 26.035 0)
+    (property "Footprint" "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical" (id 2) (at 249.555 26.035 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (id 3) (at 249.555 26.035 0)
@@ -5676,7 +5676,7 @@
       (reference "J8") (unit 1) (value "EXP 1") (footprint "Connector_Audio:Jack_6.35mm_Neutrik_NMJ6HFD2_Horizontal")
     )
     (path "/3ed761fc-73b0-4fad-9c40-d3c2aa5128e2"
-      (reference "J9") (unit 1) (value "Conn_01x02_Female") (footprint "Connector_JST:JST_XH_B2B-XH-AM_1x02_P2.50mm_Vertical")
+      (reference "J9") (unit 1) (value "Conn_01x02_Female") (footprint "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical")
     )
     (path "/7aa8ebeb-8bea-4614-8ec6-7c790f165918"
       (reference "R1") (unit 1) (value "10") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal")
