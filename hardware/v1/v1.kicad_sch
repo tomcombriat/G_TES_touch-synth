@@ -4044,7 +4044,7 @@
     (uuid 55be732d-d054-4d1b-b915-371f3d6eb5d0)
     (property "Reference" "U1" (id 0) (at 83.82 26.7802 0))
     (property "Value" "PT8211-pt8211" (id 1) (at 83.82 29.3171 0))
-    (property "Footprint" "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" (id 2) (at 83.82 39.37 0)
+    (property "Footprint" "Package_SO:SOP-8_3.9x4.9mm_P1.27mm" (id 2) (at 83.82 39.37 0)
       (effects (font (size 1.27 1.27) italic) hide)
     )
     (property "Datasheet" "" (id 3) (at 83.82 39.37 0)
@@ -5763,7 +5763,7 @@
       (reference "SW1") (unit 1) (value "RotaryEncoder_Switch") (footprint "Rotary_Encoder:RotaryEncoder_Alps_EC11E-Switch_Vertical_H20mm")
     )
     (path "/55be732d-d054-4d1b-b915-371f3d6eb5d0"
-      (reference "U1") (unit 1) (value "PT8211-pt8211") (footprint "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm")
+      (reference "U1") (unit 1) (value "PT8211-pt8211") (footprint "Package_SO:SOP-8_3.9x4.9mm_P1.27mm")
     )
     (path "/98f5bc82-3b1e-4f7c-9aea-552da5d9b877"
       (reference "U2") (unit 1) (value "Pico") (footprint "Pi Pico:RPi_Pico_SMD_TH")
