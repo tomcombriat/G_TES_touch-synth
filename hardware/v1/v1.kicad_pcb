@@ -8522,7 +8522,7 @@
     (tedit 0) (tstamp f56aac17-2e8f-490f-b318-aca0a658ba5d)
     (at 139.7 85.344)
     (attr board_only exclude_from_pos_files exclude_from_bom)
-    (fp_text reference "G***" (at 0 0) (layer "F.SilkS")
+    (fp_text reference "G***" (at 0 0) (layer "F.SilkS") hide
       (effects (font (size 1.524 1.524) (thickness 0.3)))
       (tstamp 761fd6d7-8b35-47f7-8d48-f515478f680c)
     )
@@ -14987,7 +14987,6 @@
   (gr_line (start 187.706 72.39) (end 187.706 72.771) (layer "B.SilkS") (width 0.15) (tstamp e6123ccb-7fe2-44d7-ae8b-5b3d10ad6b28))
   (gr_line (start 182.626 90.932) (end 182.626 90.551) (layer "B.SilkS") (width 0.15) (tstamp f9b048d2-8a46-428e-9fae-8f5c0ff28e50))
   (gr_line (start 151 109) (end 151 109.5) (layer "B.SilkS") (width 0.15) (tstamp fa0bfed4-52ff-4177-a351-23a64aaa58e5))
-  (gr_rect (start 374 230) (end 432 293) (layer "Dwgs.User") (width 0.15) (fill none) (tstamp 7eee0136-7150-4a55-9e9b-f446b1d1902b))
   (gr_rect (start 234.5 139.5) (end 95.5 40.5) (layer "Edge.Cuts") (width 0.1) (fill none) (tstamp 19269482-ad02-45a5-8839-e3030e26b65c))
   (gr_text "100u" (at 120.904 91.44) (layer "B.SilkS") (tstamp 02930d6f-dbb8-458b-aa1a-828dc1cb2dea)
     (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
@@ -15079,7 +15078,7 @@
   (gr_text "1 - B" (at 134.62 135.89) (layer "B.SilkS") (tstamp 7946bb44-7940-42d4-8f7c-d1d9d4a83f25)
     (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
   )
-  (gr_text "100" (at 195.5038 67.056) (layer "B.SilkS") (tstamp 89c0f478-63d6-411d-97f2-c9a22b469f92)
+  (gr_text "100" (at 195.326 67.056) (layer "B.SilkS") (tstamp 89c0f478-63d6-411d-97f2-c9a22b469f92)
     (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
   )
   (gr_text "10k" (at 163.068 78.994 90) (layer "B.SilkS") (tstamp 8e7a0d84-6f18-47fd-8ca1-8f8513bb7c4f)
@@ -15151,7 +15150,7 @@
   (gr_text "Volume\n" (at 226.3394 58.293) (layer "F.SilkS") (tstamp 1cb40dbb-f1ce-4245-a6a9-2fae5cbf7d0d)
     (effects (font (size 1.5 1.5) (thickness 0.2)))
   )
-  (gr_text "OUT R" (at 204.216 44.196 90) (layer "F.SilkS") (tstamp 2adf9214-74d3-4210-ada7-7319deaa0696)
+  (gr_text "OUT R" (at 204.47 43.9166 90) (layer "F.SilkS") (tstamp 2adf9214-74d3-4210-ada7-7319deaa0696)
     (effects (font (size 1.5 1.5) (thickness 0.25)))
   )
   (gr_text "1 - A\n" (at 134.62 135.89) (layer "F.SilkS") (tstamp 2e4d429b-7be4-4554-8824-7eab65206403)
@@ -15212,9 +15211,6 @@
     (effects (font (size 1.5 1.5) (thickness 0.25)))
   )
   (gr_text "1 - B" (at 115.1636 126.5936) (layer "F.SilkS") (tstamp f3917a04-7417-463b-b659-62eef08edb60)
-    (effects (font (size 1 1) (thickness 0.15)))
-  )
-  (gr_text "Batteries (4xAA)\n" (at 403 236) (layer "Dwgs.User") (tstamp 508a9e2a-a79e-49ef-bf95-d83def610f68)
     (effects (font (size 1 1) (thickness 0.15)))
   )
 
@@ -51007,12 +51003,6 @@
     (members
       09764d54-3d0d-441e-9355-009697df87ca
       0e669a0a-4948-47ee-8384-b4ca2b11e715
-    )
-  )
-  (group "" (id b3834edf-6708-459c-8bc8-432465abe826)
-    (members
-      508a9e2a-a79e-49ef-bf95-d83def610f68
-      7eee0136-7150-4a55-9e9b-f446b1d1902b
     )
   )
   (group "" (id bfd7a38a-bf38-45a6-befe-1bba567ff0ff)
