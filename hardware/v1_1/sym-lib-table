@@ -1,0 +1,5 @@
+(sym_lib_table
+  (lib (name "TFT_screens")(type "KiCad")(uri "/home/tom/TES/G_TES_touch-synth/hardware/kicad_components/TFT_screens.kicad_sym")(options "")(descr ""))
+  (lib (name "MCU_RaspberryPi_and_Boards")(type "KiCad")(uri "/home/tom/TES/G_TES_touch-synth/hardware/kicad_components/RP-Pico Libraries/MCU_RaspberryPi_and_Boards.kicad_sym")(options "")(descr ""))
+  (lib (name "pt8211-pt8211")(type "KiCad")(uri "/home/tom/TES/G_TES_touch-synth/hardware/kicad_components/pt8211-pt8211.kicad_sym")(options "")(descr ""))
+)

@@ -1,0 +1,7 @@
+(fp_lib_table
+  (lib (name "Pi Pico")(type "KiCad")(uri "/home/tom/TES/G_TES_touch-synth/hardware/kicad_components/RP-Pico Libraries/MCU_RaspberryPi_and_Boards.pretty")(options "")(descr ""))
+  (lib (name "MIDI_DIN5")(type "KiCad")(uri "/home/tom/TES/G_TES_touch-synth/hardware/kicad_components/MIDI_DIN5.pretty")(options "")(descr ""))
+  (lib (name "dual_pot")(type "KiCad")(uri "/home/tom/TES/G_TES_touch-synth/hardware/kicad_components/dual_pot.pretty")(options "")(descr ""))
+  (lib (name "TFT_Screens")(type "KiCad")(uri "/home/tom/TES/G_TES_touch-synth/hardware/kicad_components/TFT_Screens.pretty")(options "")(descr ""))
+  (lib (name "pot_dials")(type "KiCad")(uri "/home/tom/TES/G_TES_touch-synth/hardware/kicad_components/pot_dials.pretty")(options "")(descr ""))
+)
