@@ -25,10 +25,11 @@
 #include <Adafruit_ILI9341.h>
 #include <XPT2046_Touchscreen.h>
 
+
 // This is calibration data for the raw touch data to the screen coordinates
-#define TS_MINX 200
+#define TS_MINX 3900
 #define TS_MINY 300
-#define TS_MAXX 3900
+#define TS_MAXX 200
 #define TS_MAXY 3800
 
 // The STMPE610 uses hardware SPI on the shield, and #8
@@ -48,13 +49,29 @@ Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
 #include <RotaryEncoder.h>
 RotaryEncoder *encoder = nullptr;
 
+/**************
+
+   GT touch
+*/
+#include <vPotentiometer.h>
+
+vPotentiometer pot(&tft);
+
+#define SCREEN_REFRESH_TIME 50
+unsigned long last_screen_refresh;
+
+
+
+
+
+
 
 /*************************
    MOZZI
 */
 
 #include <MozziGuts.h>
-#include <Oscil.h> // oscillator template
+#include <Oscil.h> // oscillator templateu
 #include <tables/saw2048_int8.h> // sine table for oscillator
 #include <tables/sin2048_int8.h> // sine table for oscillator
 
@@ -62,24 +79,13 @@ RotaryEncoder *encoder = nullptr;
 Oscil <SAW2048_NUM_CELLS, AUDIO_RATE> aSaw(SAW2048_DATA);
 Oscil <SAW2048_NUM_CELLS, AUDIO_RATE> aSaw2(SAW2048_DATA);
 int freq1 = 440;
-volatile int freq2 = 88;
+volatile int freq2 = 221;
 
 volatile int rotary = 0;
 int rotary_prev = 0;
 
 
-/*
-  void rotary_encoder_irq()
-  {
-  if (digitalRead(PIN0))
-  { if (digitalRead(PIN1)) rotary += 1;
-    else rotary -= 1;
-  }
-  else
-  { if (digitalRead(PIN1)) rotary -= 1;
-    else rotary += 1;
-  }
-  }*/
+
 
 
 void checkPosition()
@@ -97,16 +103,18 @@ void setup() {
 
 void setup1(void) {
   // while (!Serial);     // used for leonardo debugging
+
   SPI.setRX(4);
   SPI.setTX(3);
   SPI.setSCK(2);
+
   pinMode(PIN0, INPUT_PULLUP);
   pinMode(PIN1, INPUT_PULLUP);
   Serial.begin(115200);
-  Serial.println(F("Touch Paint!"));
+
 
   tft.begin();
-  tft.setRotation(1);
+  tft.setRotation(3);
 
   if (!ts.begin()) {
     Serial.println("Couldn't start touchscreen controller");
@@ -115,17 +123,18 @@ void setup1(void) {
   Serial.println("Touchscreen started");
   tft.fillScreen(ILI9341_BLACK);
 
-/*******
- * should work to do it ourselves, my test was not good but I think an interrupt is needed on both pins.
- * and not only on falling
- * 
- * 
- */
+
   encoder = new RotaryEncoder(PIN1, PIN0, RotaryEncoder::LatchMode::FOUR3);
 
   attachInterrupt(digitalPinToInterrupt(PIN0), checkPosition, CHANGE);
   attachInterrupt(digitalPinToInterrupt(PIN1), checkPosition, CHANGE);
   // attachInterrupt(digitalPinToInterrupt(PIN0), rotary_encoder_irq, FALLING);
+
+  pot.setPosition(40, 40);
+  pot.setSize(20);
+  pot.setColor(60000);
+  pot.setBackgroundColor(0);
+  pot.update();
 
 }
 
@@ -151,14 +160,10 @@ AudioOutput_t updateAudio() {
 void loop1()
 {
 
-  /*  if (rotary != rotary_prev) {
-       Serial.println(rotary);
-       rotary_prev = rotary;
-     }*/
 
   static int pos = 0;
 
- // encoder->tick(); // just call tick() to check the state.
+  // encoder->tick(); // just call tick() to check the state.
 
   int newPos = encoder->getPosition();
   if (pos != newPos) {
@@ -167,11 +172,22 @@ void loop1()
     Serial.print(" dir:");
     Serial.println((int)(encoder->getDirection()));
     pos = newPos;
+    pot.setColor(newPos << 4);
+
+
   } // if
 
 
 
-
+  if (millis() > last_screen_refresh + SCREEN_REFRESH_TIME)
+  {
+    unsigned long tim = millis();
+    //pot.setValue(255-(analogRead(26)>>2));
+    pot.setValue(1024 - analogRead(26), 10);
+    pot.update();
+    last_screen_refresh = millis();
+    Serial.println(millis() - tim);
+  }
 
 
 
@@ -194,6 +210,7 @@ void loop1()
     freq2 = p.y << 1;
 
 
+    //tft.fillScreen(ILI9341_BLACK);
     tft.fillRect(100, 150, 140, 60, ILI9341_BLACK);
     tft.setTextColor(ILI9341_GREEN);
     tft.setCursor(100, 150);
@@ -202,6 +219,8 @@ void loop1()
     tft.setCursor(100, 180);
     tft.print("Y = ");
     tft.print(p.y);
+
+
 
 
 
