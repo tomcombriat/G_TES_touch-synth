@@ -55,9 +55,9 @@ RotaryEncoder *encoder = nullptr;
 */
 #include <vPotentiometer.h>
 
-vPotentiometer pot(&tft);
+ClassicPot pot(&tft);
 
-#define SCREEN_REFRESH_TIME 50
+#define SCREEN_REFRESH_TIME 20
 unsigned long last_screen_refresh;
 
 
@@ -131,7 +131,8 @@ void setup1(void) {
   // attachInterrupt(digitalPinToInterrupt(PIN0), rotary_encoder_irq, FALLING);
 
   pot.setPosition(40, 40);
-  pot.setSize(20);
+  //pot.setSize(20);
+  pot.setSize(10);
   pot.setColor(60000);
   pot.setBackgroundColor(0);
   pot.update();
@@ -173,22 +174,26 @@ void loop1()
     Serial.println((int)(encoder->getDirection()));
     pos = newPos;
     pot.setColor(newPos << 4);
+    pot.setText(String(newPos));
+    pot.setSize(newPos);
+    pot.setPosition(newPos,newPos);
 
 
   } // if
 
 
 
-  if (millis() > last_screen_refresh + SCREEN_REFRESH_TIME)
-  {
+ /* if (millis() > last_screen_refresh + SCREEN_REFRESH_TIME)
+  {*/
     unsigned long tim = millis();
-    //pot.setValue(255-(analogRead(26)>>2));
-    pot.setValue(1024 - analogRead(26), 10);
+    pot.setValue(1023 - analogRead(26), 10);
     pot.update();
     last_screen_refresh = millis();
-    Serial.println(millis() - tim);
-  }
+  //}
 
+Serial.print(tft.width());
+Serial.print(" ");
+Serial.println(tft.height());
 
 
 
