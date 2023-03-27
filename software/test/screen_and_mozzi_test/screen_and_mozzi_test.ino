@@ -177,10 +177,10 @@ void loop1()
     Serial.print(" dir:");
     Serial.println((int)(encoder->getDirection()));
     pos = newPos;
-    //pot.setColor(newPos << 4);
+    pot.setColor(newPos << 4);
     //pot.setText(String(newPos));
-    pot.setSize(newPos);
-    //pot.setPosition(newPos,newPos);
+    pot.setSize(newPos+20);
+    pot.setPosition(newPos+60,newPos+60);
 
 
   } // if
