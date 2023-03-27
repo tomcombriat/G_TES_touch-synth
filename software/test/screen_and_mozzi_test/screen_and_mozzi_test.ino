@@ -54,8 +54,10 @@ RotaryEncoder *encoder = nullptr;
    GT touch
 */
 #include <vPotentiometer.h>
+#include<Parameter.h>
 
 ClassicPot pot(&tft);
+Parameter testParameter("coucou blac blac");
 
 #define SCREEN_REFRESH_TIME 20
 unsigned long last_screen_refresh;
@@ -98,6 +100,8 @@ void checkPosition()
 
 void setup() {
   startMozzi(CONTROL_RATE);
+  //testParameter.setValue((uint8_t)15);
+  pot.attachParameter(&testParameter);
 }
 
 
@@ -173,10 +177,10 @@ void loop1()
     Serial.print(" dir:");
     Serial.println((int)(encoder->getDirection()));
     pos = newPos;
-    pot.setColor(newPos << 4);
-    pot.setText(String(newPos));
+    //pot.setColor(newPos << 4);
+    //pot.setText(String(newPos));
     pot.setSize(newPos);
-    pot.setPosition(newPos,newPos);
+    //pot.setPosition(newPos,newPos);
 
 
   } // if
@@ -186,14 +190,12 @@ void loop1()
  /* if (millis() > last_screen_refresh + SCREEN_REFRESH_TIME)
   {*/
     unsigned long tim = millis();
-    pot.setValue(1023 - analogRead(26), 10);
+    //pot.setValue(1023 - analogRead(26), 10);
+    testParameter.setValue(1023 - analogRead(26),10);
     pot.update();
-    last_screen_refresh = millis();
   //}
 
-Serial.print(tft.width());
-Serial.print(" ");
-Serial.println(tft.height());
+
 
 
 
