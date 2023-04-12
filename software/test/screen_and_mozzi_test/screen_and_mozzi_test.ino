@@ -57,7 +57,7 @@ RotaryEncoder *encoder = nullptr;
 #include<Parameter.h>
 
 ClassicPot pot(&tft);
-Parameter testParameter("coucou blac blac");
+Parameter<uint8_t> testParameter("coucou blac blac");
 
 #define SCREEN_REFRESH_TIME 20
 unsigned long last_screen_refresh;
@@ -72,7 +72,6 @@ unsigned long last_screen_refresh;
    MOZZI
 */
 
-#include <MozziGuts.h>
 #include <Oscil.h> // oscillator templateu
 #include <tables/saw2048_int8.h> // sine table for oscillator
 #include <tables/sin2048_int8.h> // sine table for oscillator
@@ -191,11 +190,17 @@ void loop1()
   {*/
     unsigned long tim = millis();
     //pot.setValue(1023 - analogRead(26), 10);
-    testParameter.setValue(1023 - analogRead(26),10);
+    //testParameter.setRawValue(1023 - analogRead(26),10);
+    testParameter.setRawValue((1023 - analogRead(26))<<6);
+    //testParameter.setRawValue(65000);
     pot.update();
   //}
 
-
+//Serial.println(testParameter.getRawValue());
+Serial.print(testParameter.getRawValue());
+testParameter.update();
+Serial.print(" ");
+Serial.println(testParameter.getValue());
 
 
 
