@@ -26,7 +26,6 @@
 #include <XPT2046_Touchscreen.h>
 #include <MIDI.h>
 
-
 // This is calibration data for the raw touch data to the screen coordinates
 #define TS_MINX 3900
 #define TS_MINY 300
@@ -66,7 +65,9 @@ Parameter<uint8_t> testParameter("coucou blac blac");
 
 AnalogInput<> AI[3] = { AnalogInput("A0", 26), AnalogInput("A1", 27), AnalogInput("A2", 28) };
 AnalogInput<> AII[2] = { AnalogInput("A0", 26), AnalogInput("A1", 27) };
-Input *in[5] = { &AII[0], &AII[1], &AI[0], &AI[1], &AI[2] };
+MidiInput MI("testMidi", 1,25);
+MidiInputHQ MIHQ("testMidiHQ", 1,26,27);
+GTInput *in[5] = { &AII[0], &AII[1], &AI[0], &AI[1], &AI[2] };
 
 #define SCREEN_REFRESH_TIME 20
 unsigned long last_screen_refresh;
