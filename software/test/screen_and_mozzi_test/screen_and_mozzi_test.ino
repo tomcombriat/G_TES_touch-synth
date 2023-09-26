@@ -25,6 +25,7 @@
 #include <Adafruit_ILI9341.h>
 #include <XPT2046_Touchscreen.h>
 #include <MIDI.h>
+#include <SD.h>
 
 // This is calibration data for the raw touch data to the screen coordinates
 #define TS_MINX 3900
@@ -53,6 +54,7 @@ void checkPosition() {
 }
 
 
+
 /**************
    GT touch
 */
@@ -73,7 +75,10 @@ GTInput *in[5] = { &AII[0], &AII[1], &AI[0], &AI[1], &AI[2] };
 unsigned long last_screen_refresh;
 
 
-
+/*******************
+SD
+*/
+File myFile;
 
 
 
@@ -155,7 +160,7 @@ void setup1(void) {
   pot.setSize(10);
   pot.setColor(60000);
   pot.setBackgroundColor(0);
-  pot.update();
+  pot.update(); 
 
   AI[1].setInvert(true);
 
@@ -164,6 +169,12 @@ void setup1(void) {
   Serial1.setRX(1);
   Serial1.setTX(0);
   MIDI.begin(MIDI_CHANNEL_OMNI);
+
+  /* SD */
+  SD.begin(19);
+  myFile = SD.open("test.txt", FILE_WRITE);
+  myFile.println("testing 1, 2, 3.");
+  myFile.close();
 }
 
 
