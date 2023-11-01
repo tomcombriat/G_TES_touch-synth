@@ -42,7 +42,6 @@ XPT2046_Touchscreen ts(STMPE_CS);
 #define TFT_DC 14
 Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
 
-
 // ROTARY
 #define PIN0 6
 #define PIN1 7
@@ -131,7 +130,7 @@ void setup1(void) {
   tft.begin();
   tft.setRotation(3);
 
-  if (!ts.begin()) {
+  if (!ts.begin(SPI)) {
     Serial.println("Couldn't start touchscreen controller");
     while (1)
       ;
