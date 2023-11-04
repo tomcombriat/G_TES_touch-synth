@@ -239,9 +239,9 @@ Serial.println(MIDI.getType());
   boolean istouched = ts.touched();
   if (istouched) {
     TS_Point p = ts.getPoint();
-    /* Serial.print("X = "); Serial.print(p.x);
+     Serial.print("X = "); Serial.print(p.x);
       Serial.print("\tY = "); Serial.print(p.y);
-      Serial.print("\tPressure = "); Serial.println(p.z);*/
+      Serial.print("\tPressure = "); Serial.println(p.z);
     // Scale from ~0->4000 to tft.width using the calibration #'s
     p.x = map(p.x, TS_MINX, TS_MAXX, 0, tft.width());
     p.y = map(p.y, TS_MINY, TS_MAXY, 0, tft.height());
