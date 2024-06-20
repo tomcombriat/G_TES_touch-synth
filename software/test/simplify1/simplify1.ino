@@ -72,16 +72,21 @@ void checkPosition() {
 
 
 
-#include <GT_Parameter.h>
-GT_Parameter test("Test", false, 10);
+
 
 
 #include <vPotentiometer.h>
 ClassicPot pot(&tft);
 
 #include <GT_Input.h>
-GT_PhysicalInput testInput("TTTT",tft.color565(255,0,0));
-GT_AnalogInput bluePot("TTT", tft.color565(0,0,255), 26, 12,2,true);
+//GT_PhysicalInput testInput("TTTT",tft.color565(255,0,0));
+GT_AnalogInput bluePot("blue", tft.color565(0,0,255), 26, 12,2,true);
+GT_AnalogInput redPot("red", tft.color565(255,0,0), 27, 12,2,true);
+
+GT_PhysicalInput * allInputs[3] = {nullptr, &bluePot,&redPot};
+
+#include <GT_Parameter.h>
+GT_Parameter test("Test", false, 8, allInputs, 3);
 
 
 GT_RotaryEncoder enc("Rot", tft.color565(0,255,255), &encoder,20,true);
@@ -183,6 +188,7 @@ void setup1(void) {
   myFile.println("testing 1, 2, 3.");
   myFile.close();
 
+  
   test.setMidiChannel(2);
   test.setMidiControl1(71);
   //test.setMidiControl2(65);
@@ -210,7 +216,7 @@ void loop() {
 }
 
 void updateControl() {
-  while (MIDI.read()) {}
+  while (MIDI.read()) {} // move to other loop?
   //aSaw.setFreq(freq1);
   aSaw.setFreq((int)test.getValue());
   aSaw2.setFreq(freq2);
@@ -224,6 +230,8 @@ AudioOutput updateAudio() {
 /**********
         * OTHER THREAD, MANAGES PARAMETERS AND ALL
         */
+
+        unsigned long tim = millis();
 void loop1() {
 
   /* test.setValue(0, 16);
@@ -233,8 +241,17 @@ void loop1() {
   Serial.println(test.getMax());
   Serial.println(test.getMin());*/
   //Serial.println(test.getValue());
-  delay(10);
+  //delay(10);
   pot.update();
   bluePot.update();
+  redPot.update();
   enc.update();
+if (millis() - tim > 5000)
+{
+  //Serial.println("incrementing");
+tim = millis();
+test.incrementInput(1);
+
+}
+ 
 }
