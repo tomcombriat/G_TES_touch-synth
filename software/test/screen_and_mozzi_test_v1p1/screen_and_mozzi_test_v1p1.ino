@@ -15,6 +15,16 @@
 
 
 
+#include "MozziConfigValues.h"  // for named option values
+#define MOZZI_AUDIO_MODE MOZZI_OUTPUT_I2S_DAC
+#define MOZZI_AUDIO_CHANNELS 1
+#define CONTROL_RATE 256 // Hz, powers of 2 are most reliable
+
+#include <Mozzi.h>
+#include <Oscil.h>                // oscillator templateu
+#include <tables/saw2048_int8.h>  // sine table for oscillator
+#include <tables/sin2048_int8.h>  // sine table for oscillator
+
 /******************
           SCREEN
         */
@@ -94,9 +104,6 @@ File myFile;
           MOZZI
         */
 
-#include <Oscil.h>                // oscillator templateu
-#include <tables/saw2048_int8.h>  // sine table for oscillator
-#include <tables/sin2048_int8.h>  // sine table for oscillator
 
 // use: Oscil <table_size, update_rate> oscilName (wavetable), look in .h file of table #included above
 Oscil<SAW2048_NUM_CELLS, AUDIO_RATE> aSaw(SAW2048_DATA);
@@ -114,7 +121,7 @@ int rotary_prev = 0;
 /*************
         * MIDI
         */
-MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
+MIDI_CREATE_INSTANCE(HardwareSerial, Serial0, MIDI);
 
 
 
@@ -147,7 +154,7 @@ void setup1(void) {
   if (!ts.begin(SPI1)) {
     Serial.println("Couldn't start touchscreen controller");
     while (1)
-      ;
+       ;
   }
   Serial.println("Touchscreen started");
   tft.fillScreen(ILI9341_BLACK);

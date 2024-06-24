@@ -25,6 +25,7 @@
 #include <Oscil.h>                // oscillator templateu
 #include <tables/saw2048_int8.h>  // sine table for oscillator
 #include <tables/sin2048_int8.h>  // sine table for oscillator
+#include <ResonantFilter.h>
 
 /******************
           SCREEN
@@ -76,20 +77,30 @@ void checkPosition() {
 
 
 #include <vPotentiometer.h>
-ClassicPot pot(&tft);
+
+const byte N_VPOT =3;
+ClassicPot pot1(&tft);
+ClassicPot pot2(&tft);
+ClassicPot pot3(&tft);
+ClassicPot * pots[N_VPOT] = {&pot1,&pot2,&pot3};
 
 #include <GT_Input.h>
 //GT_PhysicalInput testInput("TTTT",tft.color565(255,0,0));
+const byte N_INPUT = 4;
 GT_AnalogInput bluePot("blue", tft.color565(0,0,255), 26, 12,2,true);
 GT_AnalogInput redPot("red", tft.color565(255,0,0), 27, 12,2,true);
+GT_RotaryEncoder enc("Rot", tft.color565(0,255,255), &encoder,20,true);
 
-GT_PhysicalInput * allInputs[3] = {nullptr, &bluePot,&redPot};
+GT_PhysicalInput * allInputs[N_INPUT] = {nullptr, &bluePot,&redPot, &enc};
 
 #include <GT_Parameter.h>
-GT_Parameter test("Test", false, 8, allInputs, 3);
 
+const byte N_PARAM=3;
+GT_Parameter resonance("resonance", false, 16, allInputs, 3);
+GT_Parameter cutoff("cutoff", false, 16, allInputs, 3);
+GT_Parameter freq("freq", false, 10, allInputs, 3);
 
-GT_RotaryEncoder enc("Rot", tft.color565(0,255,255), &encoder,20,true);
+GT_Parameter * params[N_PARAM] = {&resonance, &cutoff, &freq}; 
 
 
 /*******************
@@ -105,21 +116,24 @@ File myFile;
         */
 // use: Oscil <table_size, update_rate> oscilName (wavetable), look in .h file of table #included above
 Oscil<SAW2048_NUM_CELLS, AUDIO_RATE> aSaw(SAW2048_DATA);
-Oscil<SAW2048_NUM_CELLS, AUDIO_RATE> aSaw2(SAW2048_DATA);
+//Oscil<SAW2048_NUM_CELLS, AUDIO_RATE> aSaw2(SAW2048_DATA);
+LowPassFilter16 lpf;
 
+
+/*
 int freq1 = 440;
 volatile int freq2 = 221;
 
 volatile int rotary = 0;
 int rotary_prev = 0;
 
-
+*/
 
 void callback(byte channel, byte number, byte value) {
   /*Serial.print(channel);
 Serial.print(" ");
 Serial.println(number);*/
-  test.notifyMIDI(channel, number, value);
+  resonance.notifyMIDI(channel, number, value);
 }
 
 /*************
@@ -189,19 +203,28 @@ void setup1(void) {
   myFile.close();
 
   
-  test.setMidiChannel(2);
-  test.setMidiControl1(71);
+  resonance.setMidiChannel(2);
+  resonance.setMidiControl1(71);
   //test.setMidiControl2(65);
 
-  pot.attachParameter(&test);
-  pot.setPosition(100, 100);
-  pot.setColor(10000);
-  pot.setSize(50);
+ /* pots[0]->attachParameter(&resonance);
+  pots[0]->setPosition(20, 20);
+  pots[0]->setColor(10000);
+  pots[0]->setSize(20);*/
+  for (byte i=0;i<N_VPOT;i++) 
+  {
+    pots[i]->attachParameter(params[i]);
+    pots[i]->setColor(10000);
+    pots[i]->setPosition(40+i*60,30);
+    pots[i]->setSize(25);
+  } 
 
   //bluePot.setTarget(&test);
   //bluePot.setInverted(true);
   //enc.setTarget(&test);
-  test.setInput(&bluePot);
+  resonance.setInput(&bluePot);
+  cutoff.setInput(&redPot);
+  freq.setInput(&enc);
 
   
 }
@@ -218,12 +241,18 @@ void loop() {
 void updateControl() {
   while (MIDI.read()) {} // move to other loop?
   //aSaw.setFreq(freq1);
-  aSaw.setFreq((int)test.getValue());
-  aSaw2.setFreq(freq2);
+  //aSaw.setFreq((int)test.getValue());
+  //aSaw2.setFreq(freq2);
+  aSaw.setFreq((int)freq.getValue());
+  lpf.setCutoffFreqAndResonance(cutoff.getValue(), resonance.getValue());
+
 }
 
 AudioOutput updateAudio() {
-  return MonoOutput::fromNBit(9, aSaw2.next() + aSaw.next());  // return an int signal centred around 0
+  //return MonoOutput::fromNBit(9, aSaw2.next() + aSaw.next());  // return an int signal centred around 0
+ //return MonoOutput::fromSFix(SFix<7,0>(SFix<7,0>(aSaw.next())));
+ return MonoOutput::fromNBit(10, lpf.next(aSaw.next())).clip();
+ //return MonoOutput::fromSFix(SFix<7,0>(aSaw.next()));
 }
 
 
@@ -242,15 +271,20 @@ void loop1() {
   Serial.println(test.getMin());*/
   //Serial.println(test.getValue());
   //delay(10);
-  pot.update();
-  bluePot.update();
+  //pot[0].update();
+  for (byte i=0;i<N_VPOT;i++) pots[i]->update();
+  /*bluePot.update();
   redPot.update();
-  enc.update();
+  enc.update();*/
+  for (byte i=0;i<N_INPUT;i++) 
+  {
+    if (allInputs[i] != nullptr) allInputs[i]->update();
+  }
 if (millis() - tim > 5000)
 {
   //Serial.println("incrementing");
 tim = millis();
-test.incrementInput(1);
+//test.incrementInput(1);
 
 }
  
