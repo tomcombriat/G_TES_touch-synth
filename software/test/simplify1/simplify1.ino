@@ -30,7 +30,6 @@
 /******************
           SCREEN
         */
-
 //#include <Adafruit_SPITFT.h>
 #include <Adafruit_GFX.h>  // Core graphics library
 #include <SPI.h>
@@ -41,16 +40,25 @@
 #include <SD.h>
 
 // This is calibration data for the raw touch data to the screen coordinates
-#define TS_MINX 3900
-#define TS_MINY 300
-#define TS_MAXX 200
-#define TS_MAXY 3800
+#define TS_MINX 422
+#define TS_MINY 295
+#define TS_MAXX 3844
+#define TS_MAXY 3810
 
 // The STMPE610 uses hardware SPI on the shield, and #8
 #define STMPE_CS 255
 //Adafruit_STMPE610 ts = Adafruit_STMPE610(STMPE_CS);
 XPT2046_Touchscreen ts(STMPE_CS, 18);
 //XPT2046_Touchscreen ts()
+
+void readAndAlignData(XPT2046_Touchscreen* ts, int16_t* xnew, int16_t* ynew, uint8_t* znew) {
+  uint16_t x, y;
+  uint8_t z;
+  ts->readData(&x, &y, &z);
+  *xnew = map(x, TS_MINX, TS_MAXX, 0, 320);
+  *ynew = map(y, TS_MINY, TS_MAXY, 0, 240);
+  *znew = z;
+}
 
 #define SCREEN_REFRESH_TIME 20
 #define TFT_CS 15
@@ -78,29 +86,29 @@ void checkPosition() {
 
 #include <vPotentiometer.h>
 
-const byte N_VPOT =3;
+const byte N_VPOT = 3;
 ClassicPot pot1(&tft);
 ClassicPot pot2(&tft);
 ClassicPot pot3(&tft);
-ClassicPot * pots[N_VPOT] = {&pot1,&pot2,&pot3};
+ClassicPot* pots[N_VPOT] = { &pot1, &pot2, &pot3 };
 
 #include <GT_Input.h>
 //GT_PhysicalInput testInput("TTTT",tft.color565(255,0,0));
 const byte N_INPUT = 4;
-GT_AnalogInput bluePot("blue", tft.color565(0,0,255), 26, 12,2,true);
-GT_AnalogInput redPot("red", tft.color565(255,0,0), 27, 12,2,true);
-GT_RotaryEncoder enc("Rot", tft.color565(0,255,255), &encoder,20,true);
+GT_AnalogInput bluePot("blue", tft.color565(0, 0, 255), 26, 12, 2, true);
+GT_AnalogInput redPot("red", tft.color565(255, 0, 0), 27, 12, 2, true);
+GT_RotaryEncoder enc("Rot", tft.color565(0, 255, 255), &encoder, 20, true);
 
-GT_PhysicalInput * allInputs[N_INPUT] = {nullptr, &bluePot,&redPot, &enc};
+GT_PhysicalInput* allInputs[N_INPUT] = { nullptr, &bluePot, &redPot, &enc };
 
 #include <GT_Parameter.h>
 
-const byte N_PARAM=3;
+const byte N_PARAM = 3;
 GT_Parameter resonance("resonance", false, 16, allInputs, 3);
 GT_Parameter cutoff("cutoff", false, 16, allInputs, 3);
 GT_Parameter freq("freq", false, 10, allInputs, 3);
 
-GT_Parameter * params[N_PARAM] = {&resonance, &cutoff, &freq}; 
+GT_Parameter* params[N_PARAM] = { &resonance, &cutoff, &freq };
 
 
 /*******************
@@ -152,7 +160,7 @@ void setup() {
 
 
 void setup1(void) {
-//encoder.getMillisBetweenRotations()
+  //encoder.getMillisBetweenRotations()
 
   Serial.begin(115200);
 
@@ -175,6 +183,8 @@ void setup1(void) {
     while (1)
       ;
   }
+
+  ts.setRotation(3);
   Serial.println("Touchscreen started");
   tft.fillScreen(ILI9341_BLACK);
 
@@ -198,26 +208,25 @@ void setup1(void) {
 
   /* SD */
   SD.begin(19);
-  myFile = SD.open("test.txt", FILE_WRITE);
+  /*myFile = SD.open("test.txt", FILE_WRITE);
   myFile.println("testing 1, 2, 3.");
-  myFile.close();
+  myFile.close();*/
 
-  
+
   resonance.setMidiChannel(2);
   resonance.setMidiControl1(71);
   //test.setMidiControl2(65);
 
- /* pots[0]->attachParameter(&resonance);
+  /* pots[0]->attachParameter(&resonance);
   pots[0]->setPosition(20, 20);
   pots[0]->setColor(10000);
   pots[0]->setSize(20);*/
-  for (byte i=0;i<N_VPOT;i++) 
-  {
+  for (byte i = 0; i < N_VPOT; i++) {
     pots[i]->attachParameter(params[i]);
     pots[i]->setColor(10000);
-    pots[i]->setPosition(40+i*60,30);
+    pots[i]->setPosition(40 + i * 60, 30);
     pots[i]->setSize(25);
-  } 
+  }
 
   //bluePot.setTarget(&test);
   //bluePot.setInverted(true);
@@ -225,8 +234,6 @@ void setup1(void) {
   resonance.setInput(&bluePot);
   cutoff.setInput(&redPot);
   freq.setInput(&enc);
-
-  
 }
 
 
@@ -239,20 +246,19 @@ void loop() {
 }
 
 void updateControl() {
-  while (MIDI.read()) {} // move to other loop?
+  while (MIDI.read()) {}  // move to other loop?
   //aSaw.setFreq(freq1);
   //aSaw.setFreq((int)test.getValue());
   //aSaw2.setFreq(freq2);
   aSaw.setFreq((int)freq.getValue());
   lpf.setCutoffFreqAndResonance(cutoff.getValue(), resonance.getValue());
-
 }
 
 AudioOutput updateAudio() {
   //return MonoOutput::fromNBit(9, aSaw2.next() + aSaw.next());  // return an int signal centred around 0
- //return MonoOutput::fromSFix(SFix<7,0>(SFix<7,0>(aSaw.next())));
- return MonoOutput::fromNBit(10, lpf.next(aSaw.next())).clip();
- //return MonoOutput::fromSFix(SFix<7,0>(aSaw.next()));
+  //return MonoOutput::fromSFix(SFix<7,0>(SFix<7,0>(aSaw.next())));
+  return MonoOutput::fromNBit(10, lpf.next(aSaw.next())).clip();
+  //return MonoOutput::fromSFix(SFix<7,0>(aSaw.next()));
 }
 
 
@@ -260,32 +266,28 @@ AudioOutput updateAudio() {
         * OTHER THREAD, MANAGES PARAMETERS AND ALL
         */
 
-        unsigned long tim = millis();
+unsigned long tim = millis();
 void loop1() {
-
-  /* test.setValue(0, 16);
-
-  Serial.println(test.getValue());
-  Serial.println(test.getName());
-  Serial.println(test.getMax());
-  Serial.println(test.getMin());*/
-  //Serial.println(test.getValue());
-  //delay(10);
-  //pot[0].update();
-  for (byte i=0;i<N_VPOT;i++) pots[i]->update();
-  /*bluePot.update();
-  redPot.update();
-  enc.update();*/
-  for (byte i=0;i<N_INPUT;i++) 
-  {
-    if (allInputs[i] != nullptr) allInputs[i]->update();
+  for (byte i = 0; i < N_VPOT; i++) pots[i]->update();  // GUI update
+  for (byte i = 0; i < N_INPUT; i++) {
+    if (allInputs[i] != nullptr) allInputs[i]->update();  // physical input update
   }
-if (millis() - tim > 5000)
-{
-  //Serial.println("incrementing");
-tim = millis();
-//test.incrementInput(1);
-
-}
- 
+  if (millis() - tim > 50) {
+    if (ts.touched()) {
+      int16_t x, y;
+      uint8_t z;
+      //ts.readData(&x,&y,&z);
+      readAndAlignData(&ts, &x, &y, &z);
+      Serial.print(x);
+      Serial.print(" ");
+      Serial.println(y);
+      for (byte i = 0; i < N_VPOT; i++) {
+        if (pots[i]->isInHitBox(x, y)) {
+          Serial.print("HIT! ");
+          Serial.println(pots[i]->getAttachedParameter()->getName());
+        }
+      }
+    }
+    tim = millis();
+  }
 }
