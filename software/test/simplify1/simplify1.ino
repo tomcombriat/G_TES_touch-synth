@@ -99,16 +99,16 @@ GT_AnalogInput bluePot("blue", tft.color565(0, 0, 255), 26, 12, 2, true);
 GT_AnalogInput redPot("red", tft.color565(255, 0, 0), 27, 12, 2, true);
 GT_RotaryEncoder enc("Rot", tft.color565(0, 255, 255), &encoder, 20, true);
 
-GT_PhysicalInput* allInputs[N_INPUT] = { nullptr, &bluePot, &redPot, &enc };
+GT_PhysicalInput* const allInputs[N_INPUT] = { nullptr, &bluePot, &redPot, &enc };
 
 #include <GT_Parameter.h>
 
 const byte N_PARAM = 3;
-GT_Parameter resonance("resonance", false, 16, allInputs, 3);
-GT_Parameter cutoff("cutoff", false, 16, allInputs, 3);
-GT_Parameter freq("freq", false, 10, allInputs, 3);
+GT_Parameter resonance("resonance", false, 16, allInputs, N_INPUT);
+GT_Parameter cutoff("cutoff", false, 16, allInputs, N_INPUT);
+GT_Parameter freq("freq", false, 10, allInputs, N_INPUT);
 
-GT_Parameter* params[N_PARAM] = { &resonance, &cutoff, &freq };
+GT_Parameter* const allParams[N_PARAM] = { &resonance, &cutoff, &freq };
 
 
 /*******************
@@ -222,7 +222,7 @@ void setup1(void) {
   pots[0]->setColor(10000);
   pots[0]->setSize(20);*/
   for (byte i = 0; i < N_VPOT; i++) {
-    pots[i]->attachParameter(params[i]);
+    pots[i]->attachParameter(allParams[i]);
     pots[i]->setColor(10000);
     pots[i]->setPosition(40 + i * 60, 30);
     pots[i]->setSize(25);
@@ -231,9 +231,17 @@ void setup1(void) {
   //bluePot.setTarget(&test);
   //bluePot.setInverted(true);
   //enc.setTarget(&test);
-  resonance.setInput(&bluePot);
+  /*resonance.setInput(&bluePot);
   cutoff.setInput(&redPot);
-  freq.setInput(&enc);
+  freq.setInput(&enc);*/
+  resonance.setInput(1);
+  cutoff.setInput(2);
+  freq.setInput(3);
+
+  freq.incrementProspectiveInput(3);
+  resonance.incrementProspectiveInput(1);
+  cutoff.incrementProspectiveInput(1);
+
 }
 
 
@@ -272,6 +280,7 @@ void loop1() {
   for (byte i = 0; i < N_INPUT; i++) {
     if (allInputs[i] != nullptr) allInputs[i]->update();  // physical input update
   }
+  for (byte i=0; i<N_PARAM; i++) allParams[i]->update();
   if (millis() - tim > 50) {
     if (ts.touched()) {
       int16_t x, y;
