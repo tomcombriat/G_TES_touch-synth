@@ -90,10 +90,9 @@ const byte N_VPOT = 3;
 ClassicPot pot1(&tft);
 ClassicPot pot2(&tft);
 ClassicPot pot3(&tft);
-ClassicPot* pots[N_VPOT] = { &pot1, &pot2, &pot3 };
+ClassicPot* const pots[N_VPOT] = { &pot1, &pot2, &pot3 };
 
 #include <GT_Input.h>
-//GT_PhysicalInput testInput("TTTT",tft.color565(255,0,0));
 const byte N_INPUT = 4;
 GT_AnalogInput bluePot("blue", tft.color565(0, 0, 255), 26, 12, 2, true);
 GT_AnalogInput redPot("red", tft.color565(255, 0, 0), 27, 12, 2, true);
@@ -108,7 +107,7 @@ GT_Parameter resonance("resonance", false, 16, allInputs, N_INPUT);
 GT_Parameter cutoff("cutoff", false, 16, allInputs, N_INPUT);
 GT_Parameter freq("freq", false, 10, allInputs, N_INPUT);
 
-GT_Parameter* const allParams[N_PARAM] = { &resonance, &cutoff, &freq };
+GT_Parameter* const allParams[N_PARAM] = {&resonance, &cutoff, &freq};
 
 
 /*******************
@@ -155,11 +154,13 @@ MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
 
 
 void setup() {
+  
   startMozzi(MOZZI_CONTROL_RATE);
 }
 
 
 void setup1(void) {
+  digitalWrite(LED_BUILTIN,HIGH);
   //encoder.getMillisBetweenRotations()
 
   Serial.begin(115200);
@@ -241,6 +242,7 @@ void setup1(void) {
   freq.incrementProspectiveInput(3);
   resonance.incrementProspectiveInput(1);
   cutoff.incrementProspectiveInput(1);
+  freq.disconnectInput();
 
 }
 
