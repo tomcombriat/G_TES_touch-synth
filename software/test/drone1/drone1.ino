@@ -215,7 +215,7 @@ void updateControl() {
   while (MIDI.read()) {}  // move to other loop?
   aSaw.setFreq((int)freq.getValue());
   aSawBass.setFreq((int)freq.getValue() >> 1);
-  aLFO.setFreq(UFix<6, 2>(LFOfreq.getValue(), true));
+  aLFO.setFreq(UFix<4, 4>(LFOfreq.getValue(), true));
   lpf.setCutoffFreqAndResonance(cutoff.getValue(), resonance.getValue());
 }
 
