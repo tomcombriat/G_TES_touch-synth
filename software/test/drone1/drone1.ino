@@ -23,6 +23,7 @@
 #include <GT_Input.h>
 #include <GT_Parameter.h>
 #include <GT_TouchScreen.h>
+#include <GT_Button.h>
 
 
 
@@ -93,6 +94,18 @@ GT_Parameter test("test", false, 8, allInputs, N_INPUT);
 GT_Parameter* const allParams[N_PARAM] = { &freq, &cutoff, &resonance, &LFOfreq, &bassLevel, &test };
 
 
+/*******
+BUTTONS
+*/
+
+const byte N_BUTTON = 2;
+GT_Button resetInputs(&tft);
+GT_Button randomize(&tft);
+
+GT_Button* const allButtons[N_BUTTON] = { &resetInputs, &randomize };
+
+
+
 /*******************
         SD
         */
@@ -123,7 +136,7 @@ MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
 
 
 
-
+#include <GT_Actions.h>
 
 void setup() {
 
@@ -197,9 +210,23 @@ void setup1(void) {
     pots[i]->setSize(25);
   }
 
-  resonance.setInput(2, true);
+  resonance.setInput(2 /*, true*/);
   // cutoff.setInput(2);
   // freq.setInput(3);
+
+
+  resetInputs.setPositionAndSize(0, 200, 100, 40);
+  resetInputs.setColor(tft.color565(120, 120, 120));
+  resetInputs.setTextColor(0);
+  resetInputs.setText("ResetIn");
+  resetInputs.setAction(&disconnectAllParam);
+
+
+  randomize.setPositionAndSize(100, 200, 100, 40);
+  randomize.setColor(tft.color565(0, 255, 0));
+  randomize.setTextColor(0);
+  randomize.setText("Randomize");
+  randomize.setAction(&randomizeAllParam);
 }
 
 
@@ -241,29 +268,26 @@ void loop1() {
     if (allInputs[i] != nullptr) allInputs[i]->update();  // physical input update
   }
 
+  for (byte i = 0; i < N_BUTTON; i++) allButtons[i]->update();
+
 
   for (byte i = 0; i < N_PARAM; i++) allParams[i]->update();
+
   touch.update();
 
   if (touch.hasBeenReleased()) {
+
     int16_t x, y;
     touch.data(&x, &y);
+
+
+
+
     for (byte i = 0; i < N_VPOT; i++) {
       if (pots[i]->isInHitBox(x, y)) pots[i]->getAttachedParameter()->incrementProspectiveInput();
     }
-  }
-  /*if (millis() - tim > 50) {
-    if (ts.touched()) {
-      int16_t x, y;
-      uint8_t z;
-      readAndAlignData(&ts, &x, &y, &z);
-      for (byte i = 0; i < N_VPOT; i++) {
-        if (pots[i]->isInHitBox(x, y)) {
-
-          pots[i]->getAttachedParameter()->incrementProspectiveInput();
-        }
-      }
+    for (byte i = 0; i < N_BUTTON; i++) {
+      if (allButtons[i]->isInHitBox(x, y)) allButtons[i]->trigAction();
     }
-    tim = millis();
-  }*/
+  }
 }
