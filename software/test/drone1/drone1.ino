@@ -20,10 +20,13 @@
 #include <SD.h>
 #include <RotaryEncoder.h>
 #include <vPotentiometer.h>
-#include <GT_Input.h>
+#include <GT_Menu.h>
 #include <GT_Parameter.h>
+
+#include <GT_Input.h>
 #include <GT_TouchScreen.h>
 #include <GT_Button.h>
+
 
 
 
@@ -33,6 +36,7 @@ XPT2046_Touchscreen ts(STMPE_CS, 18);
 
 GT_Touchscreen touch(&ts, TFT_SIZE_X, TFT_SIZE_Y, TOUCH_RESPONSE_TIME);
 
+/*
 void readAndAlignData(XPT2046_Touchscreen* ts, int16_t* xnew, int16_t* ynew, uint8_t* znew) {
   uint16_t x, y;
   uint8_t z;
@@ -40,7 +44,7 @@ void readAndAlignData(XPT2046_Touchscreen* ts, int16_t* xnew, int16_t* ynew, uin
   *xnew = map(x, TS_MINX, TS_MAXX, 0, 320);
   *ynew = map(y, TS_MINY, TS_MAXY, 0, 240);
   *znew = z;
-}
+}*/
 
 
 Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
@@ -80,6 +84,12 @@ GT_RotaryEncoder enc("Rot", tft.color565(0, 255, 255), &encoder, 20, true);
 GT_PhysicalInput* const allInputs[N_INPUT] = { nullptr, &enc, &bluePot, &redPot };
 
 
+/**
+MENU
+*/
+GT_Menu test_menu(&tft, &enc);
+GT_MenuParameter test_menu_para(&tft, &enc);
+
 /**********
 SYNTHESIS PARAMETERS
 */
@@ -99,10 +109,10 @@ BUTTONS
 */
 
 const byte N_BUTTON = 2;
-GT_Button resetInputs(&tft);
-GT_Button randomize(&tft);
+GT_BasicButton resetInputs(&tft);
+GT_BasicButton randomize(&tft);
 
-GT_Button* const allButtons[N_BUTTON] = { &resetInputs, &randomize };
+GT_BasicButton* const allButtons[N_BUTTON] = { &resetInputs, &randomize };
 
 
 
@@ -173,7 +183,7 @@ void setup1(void) {
   touch.calib(TS_MINX, TS_MINY, TS_MAXX, TS_MAXY);
 
   ts.setRotation(3);
-  Serial.println("Touchscreen started");
+  //Serial.println("Touchscreen started");
   tft.fillScreen(ILI9341_BLACK);
 
 
@@ -270,24 +280,25 @@ void loop1() {
 
   for (byte i = 0; i < N_BUTTON; i++) allButtons[i]->update();
 
-
   for (byte i = 0; i < N_PARAM; i++) allParams[i]->update();
 
   touch.update();
+  test_menu_para.update();
 
   if (touch.hasBeenReleased()) {
 
     int16_t x, y;
     touch.data(&x, &y);
 
-
-
-
-    for (byte i = 0; i < N_VPOT; i++) {
+    for (byte i = 0; i < N_VPOT; i++)
       if (pots[i]->isInHitBox(x, y)) pots[i]->getAttachedParameter()->incrementProspectiveInput();
-    }
-    for (byte i = 0; i < N_BUTTON; i++) {
-      if (allButtons[i]->isInHitBox(x, y)) allButtons[i]->trigAction();
-    }
+    for (byte i = 0; i < N_BUTTON; i++) if (allButtons[i]->isInHitBox(x, y)) allButtons[i]->trigAction();
+  }
+  if (touch.hasBeenReleasedAfterLongPress()) {
+    /* int16_t x, y;
+    touch.data(&x, &y);
+    for (byte i = 0; i < N_VPOT; i++) if (pots[i]->isInHitBox(x, y)) pots[i]->getAttachedParameter()->disconnectInput();    
+*/
+    test_menu_para.start(allParams[0]);
   }
 }
