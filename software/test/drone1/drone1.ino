@@ -34,6 +34,7 @@
 
 XPT2046_Touchscreen ts(STMPE_CS, 18);
 
+
 GT_Touchscreen touch(&ts, TFT_SIZE_X, TFT_SIZE_Y, TOUCH_RESPONSE_TIME);
 
 /*
@@ -289,16 +290,16 @@ void loop1() {
 
     int16_t x, y;
     touch.data(&x, &y);
+    Serial.print(x);
+    Serial.print(" ");
+    Serial.println(y);
 
-    for (byte i = 0; i < N_VPOT; i++)
-      if (pots[i]->isInHitBox(x, y)) pots[i]->getAttachedParameter()->incrementProspectiveInput();
+    for (byte i = 0; i < N_VPOT; i++) if (pots[i]->isInHitBox(x, y)) pots[i]->getAttachedParameter()->incrementProspectiveInput();
+
     for (byte i = 0; i < N_BUTTON; i++) if (allButtons[i]->isInHitBox(x, y)) allButtons[i]->trigAction();
   }
-  if (touch.hasBeenReleasedAfterLongPress()) {
-    /* int16_t x, y;
-    touch.data(&x, &y);
-    for (byte i = 0; i < N_VPOT; i++) if (pots[i]->isInHitBox(x, y)) pots[i]->getAttachedParameter()->disconnectInput();    
-*/
+ /*if (touch.hasBeenReleasedAfterLongPress()) {
+
     test_menu_para.start(allParams[0]);
-  }
+  }*/
 }

@@ -15,10 +15,10 @@ TOUCHSCREEN
 #define TOUCH_RESPONSE_TIME 50
 
 // This is default calibration data for the raw touch data to the screen coordinates
-#define TS_MINX 422
-#define TS_MINY 295
-#define TS_MAXX 3844
-#define TS_MAXY 3810
+#define TS_MINX 930
+#define TS_MINY 860
+#define TS_MAXX 3300
+#define TS_MAXY 2800
 
 
 
